@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+"""add-icons CODEPOINT[=mdi-name]...
+
+Adds Material Design Icons to shared/: downloads each SVG (white fill, for
+BarSvgIcon to tint) into shared/icons/ and maps the glyph's codepoint to it in
+shared/glyphs.js. Without =name, the icon is the MDI icon with that codepoint
+(Nerd Font's md range is MDI's own codepoints); a glyph from another set
+(Font Awesome, Weather Icons) names its stand-in.
+
+  tools/add-icons F0379 F037A
+  tools/add-icons F028=volume-high
+"""
+import json, os, re, sys, urllib.request
+
+VERSION = "7.4.47"
+CDN = f"https://cdn.jsdelivr.net/npm/@mdi/svg@{VERSION}"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SHARED = os.path.join(ROOT, "shared")
+
+if len(sys.argv) < 2:
+    sys.exit(__doc__)
+
+meta = json.load(urllib.request.urlopen(f"{CDN}/meta.json"))
+by_cp = {m["codepoint"]: m["name"] for m in meta}
+names = {m["name"] for m in meta}
+
+glyphs_path = os.path.join(SHARED, "glyphs.js")
+glyphs = open(glyphs_path).read()
+table = re.search(r"var icons = \{\n(.*?)\n\}", glyphs, re.S)
+entries = dict(re.findall(r'"([0-9A-F]+)": "([^"]+)"', table.group(1)))
+
+for arg in sys.argv[1:]:
+    cp, _, name = arg.partition("=")
+    cp = cp.upper()
+    name = name or by_cp.get(cp)
+    if not name or name not in names:
+        sys.exit(f"{arg}: no MDI icon")
+    svg = urllib.request.urlopen(f"{CDN}/svg/{name}.svg").read().decode()
+    svg = re.sub(r' id="[^"]*"', "", svg).replace("<path ", '<path fill="#fff" ').replace(" />", "/>").strip() + "\n"
+    with open(os.path.join(SHARED, "icons", name + ".svg"), "w") as f:
+        f.write(svg)
+    entries[cp] = name
+    print(f"{cp} {name}")
+
+body = ",\n".join(f'  "{k}": "{v}"' for k, v in sorted(entries.items()))
+with open(glyphs_path, "w") as f:
+    f.write(glyphs[: table.start(1)] + body + glyphs[table.end(1):])

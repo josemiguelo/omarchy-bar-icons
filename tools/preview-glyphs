@@ -1,0 +1,27 @@
+#!/bin/bash
+# preview-glyphs [out.png]
+#
+# Renders every mapping in shared/glyphs.js: the Nerd Font glyph above the SVG
+# that replaces it, labelled with the codepoint, to check that each icon is the
+# glyph's picture. Needs ImageMagick, rsvg-convert and a Nerd Font.
+set -euo pipefail
+
+ROOT=$(cd "$(dirname "$0")/.." && pwd)
+OUT=${1:-glyphs-preview.png}
+FONT=${FONT:-$(fc-match -f '%{file}' 'JetBrainsMono Nerd Font')}
+WORK=$(mktemp -d)
+trap 'case "$WORK" in /tmp/tmp.?*) rm -rf -- "$WORK" ;; esac' EXIT
+
+cells=()
+while read -r cp name; do
+  ch=$(python3 -c "import sys; print(chr(int(sys.argv[1], 16)), end='')" "$cp")
+  magick -size 72x60 xc:'#eff1f5' -font "$FONT" -pointsize 36 -fill '#4c4f69' -gravity center -annotate +0+0 "$ch" "$WORK/g-$cp.png"
+  rsvg-convert -h 40 "$ROOT/shared/icons/$name.svg" |
+    magick - -background '#eff1f5' -fill '#4c4f69' -colorize 100 -flatten -gravity center -extent 72x60 "$WORK/s-$cp.png"
+  magick -size 72x18 xc:'#eff1f5' -font "$FONT" -pointsize 11 -fill '#4c4f69' -gravity center -annotate +0+0 "$cp" "$WORK/l-$cp.png"
+  magick "$WORK/g-$cp.png" "$WORK/s-$cp.png" "$WORK/l-$cp.png" -append "$WORK/c-$cp.png"
+  cells+=("$WORK/c-$cp.png")
+done < <(sed -n 's/^  "\([0-9A-F]*\)": "\([^"]*\)".*/\1 \2/p' "$ROOT/shared/glyphs.js")
+
+magick montage "${cells[@]}" -tile 12x -geometry +2+2 -background '#d0d4e0' "$OUT"
+echo "${#cells[@]} mappings in $OUT"
