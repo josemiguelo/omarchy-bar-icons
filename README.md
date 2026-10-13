@@ -50,7 +50,7 @@ and `patch`.
 | `omarchy.indicators` | each indicator draws `BarSvgIcon` |
 | `omarchy.tray` | drawer chevron as an icon; app icons at 70% of the bar |
 | `omarchy.clock` | text a step up (`heading`), bold |
-| `jankeesvw.notification-center`, `io.github.zeus-deus.voxtype` | the icon button draws `BarSvgIcon` |
+| `jankeesvw.notification-center`, `io.github.zeus-deus.voxtype`, `io.github.sumdahl.media` | the icon button draws `BarSvgIcon` |
 | `pomodoro-omarchy` | phase icon as an icon, countdown at `heading` size |
 | `crmne.mpris` | transport icons (80% of the bar) and album-art fallback as icons, title a step up (`title`) |
 | `tornikegomareli.spaces` | workspace numbers at `heading` size |

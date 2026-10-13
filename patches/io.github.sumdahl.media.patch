@@ -1,0 +1,11 @@
+diff -ru a/Panel.qml b/Panel.qml
+--- a/Panel.qml	2026-10-13 14:20:11.000000000 -0500
++++ b/Panel.qml	2026-10-13 14:28:43.417318570 -0500
+@@ -148,6 +148,7 @@
+     anchors.fill: parent
+     bar: root.bar
+     text: root.playing ? "󰎈" : "󰏤"
++    iconComponent: BarSvgIcon { host: button }
+     active: root.opened
+     // Paused media stays visible but recedes, so a glance at the bar still
+     // tells you whether anything is actually playing.

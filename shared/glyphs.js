@@ -55,6 +55,7 @@ var icons = {
   "F036D": "microphone-off",
   "F0379": "monitor",
   "F037A": "monitor-multiple",
+  "F0388": "music-note",
   "F03E4": "pause",
   "F040A": "play",
   "F04AD": "skip-next",
