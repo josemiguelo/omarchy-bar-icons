@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Effects
 import QtQuick.Window
 import qs.Commons
+import qs.Commons as Commons
 import qs.Ui
 import "glyphs.js" as Glyphs
 
@@ -24,7 +25,7 @@ Item {
   property string source: ""
   property real share: 0.7
   property real extent: host ? host.barSize : Style.bar.sizeHorizontal
-  property color color: host ? (host.active && host.useActiveColor ? host.activeColor : host.foreground) : Color.bar.text
+  property color color: host ? (host.active && host.useActiveColor ? host.activeColor : host.foreground) : Commons.Color.bar.text
 
   property string hostText: host ? String(host.text || "") : ""
 
