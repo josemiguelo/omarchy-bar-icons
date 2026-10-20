@@ -56,6 +56,7 @@ and `patch`.
 | `tornikegomareli.spaces` | workspace numbers at `heading` size |
 | `josemiguelo.menu-button` (own) | the Omarchy logo as an icon, opening the menu; Keystroke's bar items after it |
 | `josemiguelo.workspace-layout` (own) | the focused workspace's tiling layout as an icon; click toggles it |
+| `josemiguelo.theme-mode` (own) | the current theme's mode as a dark or light mode icon (not night light's moon or the weather's sun); click runs `omarchy-theme-mode-toggle` (not part of this repo), which switches to the other |
 
 Text sizes are Omarchy's font tokens, so they follow the text size setting;
 icon sizes follow the bar's thickness.
